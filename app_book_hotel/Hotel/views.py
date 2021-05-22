@@ -1,8 +1,9 @@
-from django.http import HttpResponse
 from django.shortcuts import render
 
+
 def showRooms(request):
-    return HttpResponse("wedwq")
+
+    return render(request, "Hotel/index.html")
 
 
 # Create your views here.
