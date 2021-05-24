@@ -23,7 +23,7 @@ from django.urls import path, include
 from BelhardHotel.settings import MEDIA_ROOT
 
 urlpatterns = [
-    path('admin/', admin.site.urls,"admin"),
+    path('admin/', admin.site.urls,name="adm"),
     path('', include('hotel.urls')),
     path('user/', include('user.urls')),
 ]
