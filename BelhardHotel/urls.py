@@ -25,6 +25,7 @@ from BelhardHotel.settings import MEDIA_ROOT
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('hotel.urls')),
+    path('user/', include('user.urls')),
 ]
 
 if settings.DEBUG:
