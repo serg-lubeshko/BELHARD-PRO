@@ -15,3 +15,4 @@ class BookingForm(forms.ModelForm):
             'date_arrival': DateInput(),
             'date_departure': DateInput(),
         }
+        # exclude = ('user',)
