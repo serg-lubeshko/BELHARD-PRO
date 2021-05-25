@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="card">
+        <div class="row g-0">
+
+
+            <div class="col-md-4">
+                {% if detail.photo %}
+                    <img class="mr-3" src="{{ detail.photo.url }}" width="400" height="250" alt="">
+                {% else %}
+                    <img class="mr-3" src="../../../images/photos/2021/05/23/def.jpg" width="400" height="250" alt="">
+                {% endif %}
+            </div>
+            <div class="col-md-8">
+                <h1> Бронирование номера</h1><br>
+                <h4> {{ room.title }} </h4>
+
+
+                <form action="" method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+
+
+                    <button type="submit" class="btn btn-outline-primary">Бронирование номера</button>
+                </form>
+            </div>
+
+{% endblock %}

@@ -58,7 +58,7 @@ class Room(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse('detail', kwargs={"room_id":self.pk})
+        return reverse('detail', kwargs={"room_id": self.pk})
 
 
 class Facilities(models.Model):
@@ -67,3 +67,18 @@ class Facilities(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class BokkingRoom(models.Model):
+    date_arrival = models.DateField(verbose_name='Дата заезда')
+    date_departure = models.DateField(verbose_name='Дата отъезда')
+    date_order = models.DateField(auto_now_add=True, verbose_name="Дата заказа")
+    desc = models.CharField(max_length=124, verbose_name='Описание')
+    users = models.ForeignKey(User, related_name='booking_user', on_delete=models.CASCADE)
+    rooms = models.ForeignKey(Room, related_name='booking_room', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.rooms.title
+
+    def get_absolute_url(self):
+        return reverse('booking', kwargs={"room_id": self.rooms.pk})

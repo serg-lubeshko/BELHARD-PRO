@@ -35,7 +35,7 @@
                         {% endif %}
                     </ul>
                     <div class="card-body">
-                        <a href="#" class="card-link">Заказать номер</a>
+                        <a href="{% url "booking" room.pk %}" class="card-link">Заказать номер</a>
                         <a href={{ room.get_absolute_url }} class="card-link">Описание</a>
                     </div>
                 </div>
