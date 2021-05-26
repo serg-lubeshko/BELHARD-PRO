@@ -65,8 +65,9 @@ def Booking(request, room_id):
                 note = form.save(commit=False)
                 note.users = request.user
                 note.rooms = room
-                # note.save()
-            print(note, 'Это ноте')
+                note.save()
+                messages.success(request, "Номер забронирован")
+
     else:
         form = BookingForm()
     context = {"form": form, "room": room}
