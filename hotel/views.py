@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.http import HttpResponse
 from django.shortcuts import render
 
+
 from hotel.forms import BookingForm
 from hotel.models import Room, Facilities, BokkingRoom
 
@@ -29,6 +30,8 @@ def check_date(room_booking, date_arrival,date_departure):
             print("OK")
         elif date_departure < date_1:
             print("OK")
+        elif date_1<=date_arrival <= date_2:
+            return False
         else:
             return False
         # print(date_1, 'date_1')
