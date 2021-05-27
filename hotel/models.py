@@ -82,3 +82,22 @@ class BokkingRoom(models.Model):
 
     def get_absolute_url(self):
         return reverse('booking', kwargs={"room_id": self.rooms.pk})
+
+
+class TypeService(models.Model):
+    title = models.CharField(max_length=50, verbose_name="Вид сервиса", unique=True)
+
+    def __str__(self):
+        return self.title
+
+
+class ServiceHotel(models.Model):
+    type = models.ForeignKey(TypeService, verbose_name="Сервис", on_delete=models.CASCADE)
+    users = models.ForeignKey(User, related_name='service_user', on_delete=models.CASCADE)
+    mark = models.IntegerField(
+        default=1,
+        validators=[
+            MinValueValidator(1),
+            MaxValueValidator(5)
+        ],
+        verbose_name='Оценка')

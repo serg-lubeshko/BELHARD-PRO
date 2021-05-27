@@ -1,6 +1,7 @@
 from django import forms
 
-from hotel.models import BokkingRoom
+from hotel.models import BokkingRoom, ServiceHotel
+
 
 class DateInput(forms.DateInput):
     input_type = 'date'
@@ -16,3 +17,11 @@ class BookingForm(forms.ModelForm):
             'date_departure': DateInput(),
         }
         # exclude = ('user',)
+
+class ServiceHotelForm(forms.ModelForm):
+    class Meta:
+        model = ServiceHotel
+        fields = ["mark"]
+        widgets = {
+            "type": forms.IntegerField()
+        }

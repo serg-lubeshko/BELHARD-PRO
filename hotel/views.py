@@ -3,8 +3,8 @@ from django.http import HttpResponse
 from django.shortcuts import render
 
 
-from hotel.forms import BookingForm
-from hotel.models import Room, Facilities, BokkingRoom
+from hotel.forms import BookingForm, ServiceHotelForm
+from hotel.models import Room, Facilities, BokkingRoom, TypeService
 
 
 def ShowRooms(request):
@@ -13,7 +13,7 @@ def ShowRooms(request):
     return render(request, template_name="hotel/index.html", context=context)
 
 
-def DetailRooms(request, room_id):
+def detailRooms(request, room_id):
     detail = Room.objects.get(id=room_id)
     facilit = detail.facilities.all()
     context = {"detail": detail, "facilitie": facilit}
@@ -38,7 +38,7 @@ def check_date(room_booking, date_arrival,date_departure):
         # print(date_2, 'date_2')
 
 
-def Booking(request, room_id):
+def booking(request, room_id):
     room = Room.objects.get(id=room_id)
     # print(room_booking)
     # print(request.POST["date_arrival"], 'mmmmmm')
@@ -75,3 +75,8 @@ def Booking(request, room_id):
         form = BookingForm()
     context = {"form": form, "room": room}
     return render(request, template_name="hotel/booking.html", context=context)
+
+def service(request):
+    serv = TypeService.objects.all()
+    form = ServiceHotelForm()
+    return render(request, 'hotel/service.html', context={'form':form, 'serv':serv})
