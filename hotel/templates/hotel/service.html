@@ -2,7 +2,21 @@
 
 {% block content %}
 
-{% csrf_token %}
-    {{ form.as_p }}
+    <form action="{% url 'service' %}" method="post">
+        {% csrf_token %}
+        {#        {{ form.as_p }}#}
+        {% for service in services %}
 
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="inputGroup-sizing-default" style="width: 20%"
+                      name="{{ service.title }}">{{ service.title }}|{{ service.id }}</span>
+                <input type="number" name="{{ service.id }}" min="1" max="5" value="5" required="True">
+                {#                {{ form.mark }}#}
+            </div>
+
+        {% endfor %}
+        <button type="submit" class="btn btn-outline-primary">Отправить</button>
+
+
+    </form>
 {% endblock %}

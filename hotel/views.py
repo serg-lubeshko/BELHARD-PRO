@@ -4,7 +4,7 @@ from django.shortcuts import render
 
 
 from hotel.forms import BookingForm, ServiceHotelForm
-from hotel.models import Room, Facilities, BokkingRoom, TypeService
+from hotel.models import Room, Facilities, BokkingRoom, TypeService, ServiceHotel
 
 
 def ShowRooms(request):
@@ -23,13 +23,13 @@ def detailRooms(request, room_id):
 def check_date(room_booking, date_arrival,date_departure):
     for dates in room_booking:
         date_1 = str(dates[0])
-        print(date_1, 'date1')
+        # print(date_1, 'date1')
         date_2 = str(dates[1])
-        print(type(date_arrival),'hhhhhhhhhhhhhhhhhhh')
+        # print(type(date_arrival),'hhhhhhhhhhhhhhhhhhh')
         if date_arrival > date_2:
-            print("OK")
+            return True
         elif date_departure < date_1:
-            print("OK")
+            return True
         elif date_1<=date_arrival <= date_2:
             return False
         else:
@@ -61,7 +61,6 @@ def booking(request, room_id):
         if result==False:
             messages.error(request, "Номер в указанные даты занят")
             form = BookingForm()
-
         else:
             form = BookingForm(request.POST)
             if form.is_valid():
@@ -78,5 +77,35 @@ def booking(request, room_id):
 
 def service(request):
     serv = TypeService.objects.all()
+    len_serv = len(serv)
     form = ServiceHotelForm()
-    return render(request, 'hotel/service.html', context={'form':form, 'serv':serv})
+    form = ServiceHotelForm()
+    if request.method == "POST":
+        user = request.user.id
+        ServiceHotel.objects.filter(users_id=user).delete()
+        for item in range(1,len_serv+1):
+            dictmodel = {}
+            ServiceHotel.objects.filter(users_id=user).update(**dictmodel)
+            mark = request.POST[str(item)]
+            dictmodel["mark"] = int(mark)
+            dictmodel["type_id"] = item
+            dictmodel["users_id"] = user
+            ServiceHotel.objects.create(**dictmodel)
+        messages.success(request,"Спасибо за Вашу оценку!")
+        # if ServiceHotel.objects.filter(users_id=user):
+        #     print("efwefwee")
+        #     A= ServiceHotel.objects.filter(type_id=item, users_id=user).update(**dictmodel)
+        #     print(A,"fwefwe")
+        # else:
+        #     print("aaa")
+        #     ServiceHotel.objects.create(**dictmodel)
+
+
+
+
+            # ServiceHotel.objects.update_or_create(type_id=user, defaults=dictmodel)
+
+
+
+
+    return render(request, 'hotel/service.html', context={ 'services':serv})

@@ -86,6 +86,8 @@ class BokkingRoom(models.Model):
 
 class TypeService(models.Model):
     title = models.CharField(max_length=50, verbose_name="Вид сервиса", unique=True)
+    class Meta:
+        ordering = ["title"]
 
     def __str__(self):
         return self.title
