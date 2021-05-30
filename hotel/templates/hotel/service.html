@@ -14,8 +14,23 @@
                 {#                {{ form.mark }}#}
             </div>
 
+
         {% endfor %}
         <button type="submit" class="btn btn-outline-primary">Отправить</button>
+
+    <hr>
+    <p><i>Количество гостей, которые оценили наш сервис: </i> {{ num_people }}</p>
+    <p><i>Средняя оценка сервиса нашего отеля: </i> {{ avg_score}}</p>
+
+        <ul>
+        {% for service in services %}
+
+        <li><i>{{ service.title}} </i> ?</li>
+
+        {% endfor %}
+        </ul>
+
+
 
 
     </form>

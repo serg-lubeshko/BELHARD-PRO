@@ -96,7 +96,7 @@ class TypeService(models.Model):
 
 
 class ServiceHotel(models.Model):
-    type = models.ForeignKey(TypeService, verbose_name="Сервис", on_delete=models.CASCADE)
+    type = models.ForeignKey(TypeService, verbose_name="Сервис", on_delete=models.CASCADE, related_name="typeservice")
     users = models.ForeignKey(User, related_name='service_user', on_delete=models.CASCADE)
     mark = models.IntegerField(
         default=1,

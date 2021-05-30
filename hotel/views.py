@@ -5,7 +5,7 @@ from django.shortcuts import render
 
 from hotel.forms import BookingForm, ServiceHotelForm
 from hotel.models import Room, Facilities, BokkingRoom, TypeService, ServiceHotel
-from django.db.models import Count
+from django.db.models import Count, Sum, Avg, Prefetch
 
 
 def ShowRooms(request):
@@ -66,7 +66,22 @@ def booking(request, room_id):
 
 
 def show_service_statistics(request):
-    pass
+    dict_avg_score_type = {}
+    query = ServiceHotel.objects.all()
+    query_type = TypeService.objects.all()
+    num_people = len(set(query.values_list("users_id", flat=True)))
+    count_service = query.count()
+    avg_score_service = (query.aggregate(score=Avg("mark"))).get('score')
+
+    list_id_type_service = set(query.values_list("type_id", flat=True))
+    for item in list_id_type_service:
+        stack = query.filter(type_id=item)
+        avg_score_service = (stack.aggregate(score=Avg("mark"))).get('score')
+        dict_avg_score_type.setdefault(query_type.get(pk=item).title, round(avg_score_service, 1))
+
+    statictic = {"num_people": num_people, "avg_score": round(avg_score_service, 1), **dict_avg_score_type}
+    # print(dict_avg_score_type)
+    return statictic
 
 
 def service(request):
@@ -84,4 +99,6 @@ def service(request):
             dictmodel["users_id"] = user
             ServiceHotel.objects.create(**dictmodel)
         messages.success(request, "Спасибо за Вашу оценку!")
-    return render(request, 'hotel/service.html', context={'services': serv})
+    context = {'services': serv}
+    stat = show_service_statistics(request)
+    return render(request, 'hotel/service.html', context={**context, **stat})
