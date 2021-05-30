@@ -1,9 +1,11 @@
 from django.contrib import messages
+from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.shortcuts import render
 
 from hotel.forms import BookingForm, ServiceHotelForm
 from hotel.models import Room, Facilities, BokkingRoom, TypeService, ServiceHotel
+from django.db.models import Count
 
 
 def ShowRooms(request):
@@ -61,6 +63,10 @@ def booking(request, room_id):
         form = BookingForm()
     context = {"form": form, "room": room}
     return render(request, template_name="hotel/booking.html", context=context)
+
+
+def show_service_statistics(request):
+    pass
 
 
 def service(request):

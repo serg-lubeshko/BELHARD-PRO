@@ -86,6 +86,8 @@ class BokkingRoom(models.Model):
 
 class TypeService(models.Model):
     title = models.CharField(max_length=50, verbose_name="Вид сервиса", unique=True)
+    users = models.ManyToManyField(User, through="ServiceHotel", related_name='users_types')
+
     class Meta:
         ordering = ["title"]
 
