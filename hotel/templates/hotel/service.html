@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 
+
 {% block content %}
 
     <form action="{% url 'service' %}" method="post">
@@ -9,8 +10,8 @@
 
             <div class="input-group mb-3">
                 <span class="input-group-text" id="inputGroup-sizing-default" style="width: 20%"
-                      name="{{ service.title }}">{{ service.title }}|{{ service.id }}</span>
-                <input type="number" name="{{ service.id }}" min="1" max="5" value="5" required="True">
+                      name="{{ service.title }}">{{ service.title }}</span>
+                <input class="input-group-text" type="number" name="{{ service.id }}" min="1" max="5" value="5" required="True" style="margin-left: 20px">
                 {#                {{ form.mark }}#}
             </div>
 
@@ -18,19 +19,15 @@
         {% endfor %}
         <button type="submit" class="btn btn-outline-primary">Отправить</button>
 
-    <hr>
-    <p><i>Количество гостей, которые оценили наш сервис: </i> {{ num_people }}</p>
-    <p><i>Средняя оценка сервиса нашего отеля: </i> {{ avg_score}}</p>
-
+        <hr>
+{#        {% include 'inc/_service.html' with num_people = num_people %}#}
+        <h3>Средняя оценка отеля: {{avg_score|floatformat}}</h3>
+        <p><i>Количество гостей, которые оценили наш сервис: </i> {{ num_people }}</p>
         <ul>
-        {% for service in services %}
-
-        <li><i>{{ service.title}} </i> ?</li>
-
+        {% for k, v in dict_avg_score.items %}
+            <li>Сервис <b>{{k}}</b> cредняя оценка: {{ v }}</li>
         {% endfor %}
         </ul>
-
-
 
 
     </form>

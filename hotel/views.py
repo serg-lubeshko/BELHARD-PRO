@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.shortcuts import render
@@ -37,6 +38,7 @@ def check_date(room_booking, date_arrival, date_departure):
             return False
 
 
+@login_required()  # в конспект
 def booking(request, room_id):
     room = Room.objects.get(id=room_id)
     if request.method == "POST":
@@ -66,6 +68,7 @@ def booking(request, room_id):
 
 
 def show_service_statistics(request):
+    print("dspdfk")
     dict_avg_score_type = {}
     query = ServiceHotel.objects.all()
     query_type = TypeService.objects.all()
@@ -79,10 +82,11 @@ def show_service_statistics(request):
         avg_score_service = (stack.aggregate(score=Avg("mark"))).get('score')
         dict_avg_score_type.setdefault(query_type.get(pk=item).title, round(avg_score_service, 1))
 
-    statictic = {"num_people": num_people, "avg_score": round(avg_score_service, 1), **dict_avg_score_type}
+    statictic = {"num_people": num_people, "avg_score":avg_score_service, "dict_avg_score":dict_avg_score_type}
+    print(statictic)
     # print(dict_avg_score_type)
+    # return render(request, template_name="hotel/service.html", context=statictic)
     return statictic
-
 
 def service(request):
     serv = TypeService.objects.all()
@@ -101,4 +105,5 @@ def service(request):
         messages.success(request, "Спасибо за Вашу оценку!")
     context = {'services': serv}
     stat = show_service_statistics(request)
+    print(stat)
     return render(request, 'hotel/service.html', context={**context, **stat})
