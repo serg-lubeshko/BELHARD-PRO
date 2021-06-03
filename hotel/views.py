@@ -93,7 +93,7 @@ def service(request):
         query.filter(users_id=user).delete()
         for item in range(1, len_serv + 1):
             dictmodel = {}
-            # ServiceHotel.objects.filter(users_id=user).update(**dictmodel)
+            # ServiceHotel.objects.filter(users_id=account).update(**dictmodel)
             mark = request.POST[str(item)]
             dictmodel["mark"] = int(mark)
             dictmodel["type_id"] = item
@@ -106,3 +106,7 @@ def service(request):
     else:
         stat = Rate.objects.all()
         return render(request, 'hotel/service.html', context={**context, 'stat': stat})
+
+def showbooking(request):
+    con = BokkingRoom.objects.filter(booking=False)
+    return render(request, template_name='hotel/adminbooking.html', context={'showbooking':con})

@@ -5,6 +5,8 @@ from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.urls import reverse
 
+from users.models import CustomUser
+
 '''
 Room
 фото *
@@ -51,6 +53,11 @@ class Room(models.Model):
 
     )
     facilities = models.ManyToManyField("Facilities")
+    number_room = models.CharField(max_length=3, verbose_name='№ комнаты', blank=True)
+
+    def save(self, *args, **kwargs):
+        self.number_room = self.title[0:3]
+        super(Room, self).save()
 
     # data_arrival = models.DateField(verbose_name='Дата заезда', null=True, default="")
     # data_departure = models.DateField(verbose_name='Дата отъезда', null=True, default="")
@@ -76,8 +83,9 @@ class BokkingRoom(models.Model):
     date_departure = models.DateField(verbose_name='Дата отъезда')
     date_order = models.DateField(auto_now_add=True, verbose_name="Дата заказа")
     desc = models.CharField(max_length=124, verbose_name='Описание')
-    users = models.ForeignKey(User, related_name='booking_user', on_delete=models.CASCADE)
+    users = models.ForeignKey(CustomUser, related_name='booking_user', on_delete=models.CASCADE)
     rooms = models.ForeignKey(Room, related_name='booking_room', on_delete=models.CASCADE)
+    booking = models.BooleanField(default=False, verbose_name="Подтверждение брони")
 
     def __str__(self):
         return self.rooms.title
@@ -88,7 +96,7 @@ class BokkingRoom(models.Model):
 
 class TypeService(models.Model):
     title = models.CharField(max_length=50, verbose_name="Вид сервиса", unique=True)
-    users = models.ManyToManyField(User, through="ServiceHotel", related_name='users_types')
+    users = models.ManyToManyField(CustomUser, through="ServiceHotel", related_name='users_types')
 
     class Meta:
         ordering = ["title"]
@@ -99,7 +107,7 @@ class TypeService(models.Model):
 
 class ServiceHotel(models.Model):
     type = models.ForeignKey(TypeService, verbose_name="Сервис", on_delete=models.CASCADE, related_name="typeservice")
-    users = models.ForeignKey(User, related_name='service_user', on_delete=models.CASCADE)
+    users = models.ForeignKey(CustomUser, related_name='service_user', on_delete=models.CASCADE)
     mark = models.IntegerField(
         default=1,
         validators=[

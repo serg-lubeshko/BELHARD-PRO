@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from user.forms import RegisterForms, UserLoginForm
+from account.forms import RegisterForms, UserLoginForm
 from django.contrib.auth import login, logout, authenticate
 
 

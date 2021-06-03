@@ -38,8 +38,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'hotel.apps.HotelConfig',
-    'user.apps.UserConfig'
+    'account.apps.AccountConfig',
+    'users.apps.UsersConfig',           #for users
 ]
+
+AUTH_USER_MODEL = 'users.CustomUser'     #for users
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

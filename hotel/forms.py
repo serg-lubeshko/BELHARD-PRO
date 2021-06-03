@@ -16,7 +16,7 @@ class BookingForm(forms.ModelForm):
             'date_arrival': DateInput(),  # Записать
             'date_departure': DateInput(),
         }
-        # exclude = ('user',)
+        # exclude = ('account',)
 
 
 class ServiceHotelForm(forms.Form):

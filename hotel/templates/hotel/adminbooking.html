@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block content %}
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">№</th>
+            <th scope="col">Имя</th>
+            <th scope="col">Дата заезда</th>
+            <th scope="col">Дата отъезда</th>
+            <th scope="col">№ комнаты</th>
+            <th scope="col">Подтвердить</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in showbooking %}
+        <tr>
+            <th scope="row">{{ forloop.counter }}</th>
+            <td>{{ item.users.first_name}}</td>
+            <td>{{ item.date_arrival }}</td>
+            <td>{{ item.date_departure }}</td>
+            <td>{{ item.rooms.number_room}}</td>
+            <td>Кн. подтверждения</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
