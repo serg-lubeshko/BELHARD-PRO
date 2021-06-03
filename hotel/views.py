@@ -5,13 +5,16 @@ from django.http import HttpResponse
 from django.shortcuts import render
 
 from hotel.forms import BookingForm, ServiceHotelForm
-from hotel.models import Room, Facilities, BokkingRoom, TypeService, ServiceHotel
+from hotel.models import Room, Facilities, BokkingRoom, TypeService, ServiceHotel, Rate
 from django.db.models import Count, Sum, Avg, Prefetch
 
 
 def ShowRooms(request):
+    query = ServiceHotel.objects.all()
+    avg_score_service = (query.aggregate(score=Avg("mark"))).get('score')
     rooms = Room.objects.order_by("title")
-    context = {"rooms": rooms}
+    context = {"rooms": rooms, "score": avg_score_service}
+
     return render(request, template_name="hotel/index.html", context=context)
 
 
@@ -67,43 +70,39 @@ def booking(request, room_id):
     return render(request, template_name="hotel/booking.html", context=context)
 
 
-def show_service_statistics(request):
-    print("dspdfk")
-    dict_avg_score_type = {}
+def show_service_statistics():
     query = ServiceHotel.objects.all()
-    query_type = TypeService.objects.all()
-    num_people = len(set(query.values_list("users_id", flat=True)))
-    count_service = query.count()
-    avg_score_service = (query.aggregate(score=Avg("mark"))).get('score')
-
+    Rate.objects.all().delete()
     list_id_type_service = set(query.values_list("type_id", flat=True))
     for item in list_id_type_service:
         stack = query.filter(type_id=item)
         avg_score_service = (stack.aggregate(score=Avg("mark"))).get('score')
-        dict_avg_score_type.setdefault(query_type.get(pk=item).title, round(avg_score_service, 1))
+        Rate.objects.update_or_create(avg_rate=avg_score_service, name_id=item)
 
-    statictic = {"num_people": num_people, "avg_score":avg_score_service, "dict_avg_score":dict_avg_score_type}
-    print(statictic)
-    # print(dict_avg_score_type)
-    # return render(request, template_name="hotel/service.html", context=statictic)
-    return statictic
 
+@login_required()
 def service(request):
+    query = ServiceHotel.objects.all()
     serv = TypeService.objects.all()
+    num_people = len(set(query.values_list("users_id", flat=True)))
+    avg_score_service = (query.aggregate(score=Avg("mark"))).get('score')
+    context = {'services': serv, 'num_people': num_people, 'avg_score_service': avg_score_service}
     len_serv = len(serv)
     if request.method == "POST":
         user = request.user.id
-        ServiceHotel.objects.filter(users_id=user).delete()
+        query.filter(users_id=user).delete()
         for item in range(1, len_serv + 1):
             dictmodel = {}
-            ServiceHotel.objects.filter(users_id=user).update(**dictmodel)
+            # ServiceHotel.objects.filter(users_id=user).update(**dictmodel)
             mark = request.POST[str(item)]
             dictmodel["mark"] = int(mark)
             dictmodel["type_id"] = item
             dictmodel["users_id"] = user
             ServiceHotel.objects.create(**dictmodel)
         messages.success(request, "Спасибо за Вашу оценку!")
-    context = {'services': serv}
-    stat = show_service_statistics(request)
-    print(stat)
-    return render(request, 'hotel/service.html', context={**context, **stat})
+        show_service_statistics()
+        stat = Rate.objects.all()
+        return render(request, 'hotel/service.html', context={**context, 'stat': stat})
+    else:
+        stat = Rate.objects.all()
+        return render(request, 'hotel/service.html', context={**context, 'stat': stat})

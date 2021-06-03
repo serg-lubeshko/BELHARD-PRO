@@ -1,3 +1,5 @@
+from datetime import timezone
+
 from django.contrib.auth.models import User
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -105,3 +107,18 @@ class ServiceHotel(models.Model):
             MaxValueValidator(5)
         ],
         verbose_name='Оценка')
+
+
+# class AutoDateTimeField(models.DateTimeField):
+#     def pre_save(self, model_instance, add):
+#         return timezone.now()
+
+
+class Rate(models.Model):
+    name = models.ForeignKey(TypeService, on_delete=models.CASCADE)
+    avg_rate = models.DecimalField(max_digits=3, decimal_places=1)
+
+    class Meta:
+        constraints = [models.CheckConstraint(check=models.Q(avg_rate__gte=0) & models.Q(avg_rate__lte=10),
+                                              name='avg_rate_gte_lte')]
+        get_latest_by = ['date_avg_rate']

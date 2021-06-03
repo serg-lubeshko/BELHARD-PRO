@@ -21,11 +21,11 @@
 
         <hr>
 {#        {% include 'inc/_service.html' with num_people = num_people %}#}
-        <h3>Средняя оценка отеля: {{avg_score|floatformat}}</h3>
+        <h3>Средняя оценка отеля: {{avg_score_service|floatformat}}</h3>
         <p><i>Количество гостей, которые оценили наш сервис: </i> {{ num_people }}</p>
         <ul>
-        {% for k, v in dict_avg_score.items %}
-            <li>Сервис <b>{{k}}</b> cредняя оценка: {{ v }}</li>
+        {% for item in stat %}
+            <li>Сервис <b>{{ item.name }}</b> cредняя оценка: {{ item.avg_rate }}</li>
         {% endfor %}
         </ul>
 
