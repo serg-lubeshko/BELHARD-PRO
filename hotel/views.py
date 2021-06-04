@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from hotel.forms import BookingForm, ServiceHotelForm
 from hotel.models import Room, Facilities, BokkingRoom, TypeService, ServiceHotel, Rate
@@ -107,6 +107,19 @@ def service(request):
         stat = Rate.objects.all()
         return render(request, 'hotel/service.html', context={**context, 'stat': stat})
 
+
 def showbooking(request):
     con = BokkingRoom.objects.filter(booking=False)
-    return render(request, template_name='hotel/adminbooking.html', context={'showbooking':con})
+    return render(request, template_name='hotel/adminbooking.html', context={'showbooking': con})
+
+
+def destroybooking(request, reservation_id):
+    order = BokkingRoom.objects.get(id=reservation_id)
+    order.delete()
+    return redirect('showbooking')
+
+def confirmbooking(request, reservation_id):
+    order = BokkingRoom.objects.get(id=reservation_id)
+    order.booking=True
+    order.save(update_fields=['booking'])
+    return redirect('showbooking')
