@@ -26,6 +26,7 @@ def detailRooms(request, room_id):
 
 
 def check_date(room_booking, date_arrival, date_departure):
+    flag = True
     for dates in room_booking:
         date_1 = str(dates[0])
         date_2 = str(dates[1])
@@ -63,7 +64,6 @@ def booking(request, room_id):
                 note.rooms = room
                 note.save()
                 messages.success(request, "Номер забронирован")
-
     else:
         form = BookingForm()
     context = {"form": form, "room": room}
@@ -113,13 +113,33 @@ def showbooking(request):
     return render(request, template_name='hotel/adminbooking.html', context={'showbooking': con})
 
 
-def destroybooking(request, reservation_id):
+def destroybooking(request, reservation_id): #Администратор может удалить  запись
     order = BokkingRoom.objects.get(id=reservation_id)
-    order.delete()
-    return redirect('showbooking')
+    if request.method == 'POST':
+        order.delete()
+        return redirect('showbooking')
 
 def confirmbooking(request, reservation_id):
     order = BokkingRoom.objects.get(id=reservation_id)
     order.booking=True
     order.save(update_fields=['booking'])
     return redirect('showbooking')
+
+def update(request, book_id):   #Администратор может обновить запись
+    data = BokkingRoom.objects.select_related('rooms').get(pk=book_id)
+
+    form = BookingForm(instance=data)
+    if request.method == "POST":
+        form = BookingForm(request.POST, instance=data)
+        if form.is_valid():
+            form.save()
+            messages.success(request,"Данные обновлены")
+        else:
+            messages.error(request, "Данные указаны неверно")
+            form = BookingForm(instance=data)
+    context = {
+        'data': data,
+        'form': form
+    }
+    return render(request, template_name="hotel/update.html", context=context)
+

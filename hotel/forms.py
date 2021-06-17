@@ -13,8 +13,8 @@ class BookingForm(forms.ModelForm):
         fields = ['date_arrival', 'date_departure', 'desc']
         widgets = {
             'desc': forms.Textarea(attrs={'class': 'form-control', 'rows': 5}),
-            'date_arrival': DateInput(),  # Записать
-            'date_departure': DateInput(),
+            'date_arrival': DateInput(format=('%Y-%m-%d')),  # Записать
+            'date_departure': DateInput(format=('%Y-%m-%d')),
         }
         # exclude = ('account',)
 
